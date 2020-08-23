@@ -1,0 +1,47 @@
+The project is from CMU 11-785 Hw4p2 Introduction to Deep Learning
+
+Usage:
+Provide all the arguments via command line. Arguments are defined in line 158-168.
+
+The decoder is first pre-trained as a language model by 20 epochs. Then the model is trained 30 epochs to get the optimal result. The model is trained by using Adam optimizer and reduce-on-plateau scheduler on training loss.
+
+Hyper-parameters:
+lr: 1e-3
+Adam parameters: torch default
+pre_trained_batch_size: 3000
+batch_size: 100
+reduce-on-plateau reduction factor: 0.5
+reduce-on-plateau patient: 1
+teaching forcing: 0.2
+dropout: 0.1
+
+Inference:
+random search with 1000 samples + greedy search
+Select the result with highest probability
+
+Model:
+This model consists of 2 parts:
+Encoder:
+1. 4 layers bi-directional pLSTM: each layer reduce sequence length by half. 
+  - hidden_size per direction: 256
+2. 2 Linear layer with output dim of 256 to produce key and value
+3. pass key and value to decoder
+
+Decoder:
+1. embedding with size of 256
+2. 2-layer LSTM:
+  - input: attention_context from last time step and input_embedding
+  - hidden_size: 256
+3. attention:
+  - query: output of LSTM
+  - key, value: from encoder
+4. Linear layer:
+  - input: attention_context and LSTM output
+  - output_size: 35 (vocabulary size)
+
+Packages used:
+numpy
+torch
+tqdm
+Levenshtein
+pandas
